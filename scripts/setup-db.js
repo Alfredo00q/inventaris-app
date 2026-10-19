@@ -1,12 +1,24 @@
 // Membuat database + tabel + akun admin (+ data contoh). Jalankan: npm run setup
 require('dotenv').config();
 const fs = require('fs'), path = require('path'), mysql = require('mysql2/promise'), bcrypt = require('bcryptjs');
+const ssl = process.env.DB_SSL_CA_PATH
+  ? { ca: fs.readFileSync(process.env.DB_SSL_CA_PATH, 'utf8'), rejectUnauthorized: true }
+  : process.env.DB_SSL_CA
+    ? { ca: process.env.DB_SSL_CA, rejectUnauthorized: true }
+    : undefined;
 const kosong = process.argv.includes('--kosong');
 (async () => {
   const name = process.env.DB_NAME || 'db_inventaris';
-  const db = await mysql.createConnection({ host: process.env.DB_HOST || '127.0.0.1', port: +process.env.DB_PORT || 3306, user: process.env.DB_USER || 'root', password: process.env.DB_PASS || '', multipleStatements: true });
-  await db.query(`CREATE DATABASE IF NOT EXISTS \`${name}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci`);
-  await db.query(`USE \`${name}\``);
+const db = await mysql.createConnection({
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASS || '',
+  database: name,
+  ssl,
+  multipleStatements: true,
+}); 
+
   await db.query(fs.readFileSync(path.join(__dirname, '../database/schema.sql'), 'utf8'));
 
   const [[{ n }]] = await db.query('SELECT COUNT(*) n FROM users');

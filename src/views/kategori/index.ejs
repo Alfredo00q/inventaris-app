@@ -1,0 +1,16 @@
+<div class="page-head"><p class="text-muted mb-0">Kelompokkan aset agar mudah dicari dan dilaporkan.</p>
+  <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#formModal" data-title="Tambah Kategori" data-action="/kategori" data-values="{}"><i class="bi bi-plus-lg"></i> Tambah Kategori</button></div>
+<div class="panel p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead><tr><th>Nama</th><th>Deskripsi</th><th class="text-center">Jumlah aset</th><th></th></tr></thead><tbody>
+  <% rows.forEach(c => { %><tr><td class="fw-semibold"><%= c.nama %></td><td class="text-muted"><%= c.deskripsi || '-' %></td><td class="text-center"><%= c.jumlah %></td>
+    <td class="text-end text-nowrap">
+      <button class="icon-btn sm" title="Ubah" data-bs-toggle="modal" data-bs-target="#formModal" data-title="Ubah Kategori" data-action="/kategori/<%= c.id %>" data-values="<%= JSON.stringify({ nama: c.nama, deskripsi: c.deskripsi || '' }) %>"><i class="bi bi-pencil"></i></button>
+      <form class="d-inline" method="post" action="/kategori/<%= c.id %>/hapus" data-confirm="Hapus kategori ini?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="icon-btn sm danger" title="Hapus"><i class="bi bi-trash"></i></button></form></td></tr><% }) %>
+  <% if (!rows.length) { %><tr><td colspan="4" class="empty">Belum ada kategori.</td></tr><% } %>
+</tbody></table></div></div>
+<div class="modal fade" id="formModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="modal-header"><h5 class="modal-title" data-role="title"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><label class="form-label">Nama kategori</label><input class="form-control mb-3" name="nama" maxlength="100" required><label class="form-label">Deskripsi</label><input class="form-control" name="deskripsi" maxlength="255"></div>
+  <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-brand">Simpan</button></div>
+</form></div></div>

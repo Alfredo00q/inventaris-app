@@ -1,0 +1,29 @@
+<div class="page-head">
+  <form class="filters" method="get" action="/peminjaman">
+    <div class="search"><i class="bi bi-search"></i><input class="form-control" name="q" value="<%= q.q || '' %>" placeholder="Cari peminjam, unit, aset"></div>
+    <select class="form-select" name="status" data-autosubmit><option value="">Semua status</option><% ['Dipinjam', 'Terlambat', 'Dikembalikan'].forEach(s => { %><option <%= q.status === s ? 'selected' : '' %>><%= s %></option><% }) %></select>
+    <button class="btn btn-outline-secondary" title="Cari"><i class="bi bi-funnel"></i></button>
+  </form>
+  <a class="btn btn-brand" href="/peminjaman/baru"><i class="bi bi-plus-lg"></i> Peminjaman Baru</a>
+</div>
+<div class="panel p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead><tr><th>Aset</th><th>Peminjam</th><th>Tanggal pinjam</th><th>Batas / kembali</th><th>Status</th><th></th></tr></thead><tbody>
+  <% rows.forEach(l => { %>
+    <tr><td><a class="fw-semibold" href="/aset/<%= l.asset_id %>"><%= l.aset %></a><div class="small text-muted"><%= l.kode %></div></td>
+      <td><%= l.peminjam %><div class="small text-muted"><%= [l.unit, l.keperluan].filter(Boolean).join(' · ') %></div></td>
+      <td><%= fmtDate(l.tgl_pinjam) %></td>
+      <td><%= l.status === 'Dikembalikan' ? fmtDate(l.tgl_kembali) : fmtDate(l.tgl_rencana_kembali) %></td>
+      <td><%- l.terlambat ? badge('Terlambat') : badge(l.status) %></td>
+      <td class="text-end"><% if (l.status === 'Dipinjam') { %><button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#returnModal" data-action="/peminjaman/<%= l.id %>/kembali" data-info="<%= l.aset %> (<%= l.peminjam %>)">Kembalikan</button><% } %></td></tr>
+  <% }) %>
+  <% if (!rows.length) { %><tr><td colspan="6" class="empty">Belum ada data peminjaman.</td></tr><% } %>
+</tbody></table></div></div>
+<%- include('../partials/pager') %>
+<div class="modal fade" id="returnModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="modal-header"><h5 class="modal-title">Catat pengembalian</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><p class="text-muted" data-role="info"></p>
+    <label class="form-label">Kondisi saat dikembalikan</label><select class="form-select mb-3" name="kondisi_kembali"><% KONDISI.forEach(k => { %><option><%= k %></option><% }) %></select>
+    <label class="form-label">Catatan (opsional)</label><input class="form-control" name="catatan" maxlength="255"></div>
+  <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-brand">Simpan</button></div>
+</form></div></div>

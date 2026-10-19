@@ -1,0 +1,24 @@
+<div class="page-head">
+  <form class="filters" method="get" action="/aset">
+    <div class="search"><i class="bi bi-search"></i><input class="form-control" name="q" value="<%= q.q || '' %>" placeholder="Cari kode, nama, merk, lokasi"></div>
+    <select class="form-select" name="kategori" data-autosubmit><option value="">Semua kategori</option><% categories.forEach(c => { %><option value="<%= c.id %>" <%= +q.kategori === c.id ? 'selected' : '' %>><%= c.nama %></option><% }) %></select>
+    <select class="form-select" name="status" data-autosubmit><option value="">Semua status</option><% STATUS.forEach(s => { %><option <%= q.status === s ? 'selected' : '' %>><%= s %></option><% }) %></select>
+    <select class="form-select" name="kondisi" data-autosubmit><option value="">Semua kondisi</option><% KONDISI.forEach(s => { %><option <%= q.kondisi === s ? 'selected' : '' %>><%= s %></option><% }) %></select>
+    <button class="btn btn-outline-secondary" title="Cari"><i class="bi bi-funnel"></i></button>
+  </form>
+  <div class="d-flex gap-2"><a class="btn btn-outline-secondary" href="/aset/export.csv?<%= qs %>"><i class="bi bi-download"></i> CSV</a><a class="btn btn-brand" href="/aset/baru"><i class="bi bi-plus-lg"></i> Tambah Aset</a></div>
+</div>
+<div class="panel p-0">
+  <div class="table-responsive"><table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Kode</th><th>Nama aset</th><th>Kategori</th><th>Lokasi</th><th>Kondisi</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    <% rows.forEach(a => { %>
+      <tr><td class="text-muted"><%= a.kode %></td>
+        <td><a class="fw-semibold" href="/aset/<%= a.id %>"><%= a.nama %></a><div class="small text-muted"><%= [a.merk, a.tahun_perolehan].filter(Boolean).join(' · ') %></div></td>
+        <td><%= a.kategori || '-' %></td><td><%= a.lokasi || '-' %></td><td><%- badge(a.kondisi) %></td><td><%- badge(a.status) %></td>
+        <td class="text-end text-nowrap"><a class="icon-btn sm" href="/aset/<%= a.id %>/edit" title="Ubah"><i class="bi bi-pencil"></i></a></td></tr>
+    <% }) %>
+    <% if (!rows.length) { %><tr><td colspan="7" class="empty">Tidak ada aset yang cocok.</td></tr><% } %>
+    </tbody></table></div>
+</div>
+<%- include('../partials/pager') %>

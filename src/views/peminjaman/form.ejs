@@ -1,0 +1,13 @@
+<form method="post" action="/peminjaman" class="panel form-panel">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if (!assets.length) { %><div class="alert alert-warning">Tidak ada aset berstatus Tersedia saat ini.</div><% } %>
+  <div class="row g-3">
+    <div class="col-12"><label class="form-label">Aset <span class="text-danger">*</span></label><select class="form-select" name="asset_id" required><option value="">Pilih aset yang tersedia</option><% assets.forEach(a => { %><option value="<%= a.id %>" <%= pre === a.id ? 'selected' : '' %>><%= a.kode %> - <%= a.nama %></option><% }) %></select></div>
+    <div class="col-md-6"><label class="form-label">Nama peminjam <span class="text-danger">*</span></label><input class="form-control" name="peminjam" maxlength="100" required></div>
+    <div class="col-md-6"><label class="form-label">Unit / bidang</label><input class="form-control" name="unit" maxlength="100"></div>
+    <div class="col-md-6"><label class="form-label">Tanggal pinjam</label><input class="form-control" type="date" name="tgl_pinjam" value="<%= t %>" required></div>
+    <div class="col-md-6"><label class="form-label">Batas pengembalian</label><input class="form-control" type="date" name="tgl_rencana_kembali" value="<%= plus %>" required></div>
+    <div class="col-12"><label class="form-label">Keperluan</label><input class="form-control" name="keperluan" maxlength="255"></div>
+  </div>
+  <div class="d-flex gap-2 mt-4"><button class="btn btn-brand" <%= assets.length ? '' : 'disabled' %>>Simpan peminjaman</button><a class="btn btn-outline-secondary" href="/peminjaman">Batal</a></div>
+</form>

@@ -1,0 +1,18 @@
+<form method="post" action="<%= action %>" class="panel form-panel">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="row g-3">
+    <div class="col-md-4"><label class="form-label">Kode aset</label><input class="form-control" name="kode" value="<%= a.kode || '' %>" maxlength="30" placeholder="Kosongkan untuk otomatis"></div>
+    <div class="col-md-8"><label class="form-label">Nama aset <span class="text-danger">*</span></label><input class="form-control" name="nama" value="<%= a.nama || '' %>" maxlength="150" required></div>
+    <div class="col-md-4"><label class="form-label">Kategori</label><select class="form-select" name="category_id"><option value="">Tanpa kategori</option><% categories.forEach(c => { %><option value="<%= c.id %>" <%= a.category_id === c.id ? 'selected' : '' %>><%= c.nama %></option><% }) %></select></div>
+    <div class="col-md-4"><label class="form-label">Merk / tipe</label><input class="form-control" name="merk" value="<%= a.merk || '' %>" maxlength="100"></div>
+    <div class="col-md-4"><label class="form-label">Tahun perolehan</label><input class="form-control" type="number" name="tahun_perolehan" value="<%= a.tahun_perolehan || '' %>" min="1900" max="2100"></div>
+    <div class="col-md-4"><label class="form-label">Lokasi / ruangan</label><input class="form-control" name="lokasi" value="<%= a.lokasi || '' %>" maxlength="100"></div>
+    <div class="col-md-4"><label class="form-label">Penanggung jawab</label><input class="form-control" name="penanggung_jawab" value="<%= a.penanggung_jawab || '' %>" maxlength="100"></div>
+    <div class="col-md-2"><label class="form-label">Kondisi</label><select class="form-select" name="kondisi"><% KONDISI.forEach(k => { %><option <%= a.kondisi === k ? 'selected' : '' %>><%= k %></option><% }) %></select></div>
+    <div class="col-md-2"><label class="form-label">Status</label>
+      <% if (a.status === 'Dipinjam') { %><input class="form-control" value="Dipinjam" disabled title="Diatur lewat menu Peminjaman"><% } else { %>
+      <select class="form-select" name="status"><% STATUS.filter(s => s !== 'Dipinjam').forEach(k => { %><option <%= a.status === k ? 'selected' : '' %>><%= k %></option><% }) %></select><% } %></div>
+    <div class="col-12"><label class="form-label">Catatan</label><textarea class="form-control" name="catatan" rows="3"><%= a.catatan || '' %></textarea></div>
+  </div>
+  <div class="d-flex gap-2 mt-4"><button class="btn btn-brand">Simpan</button><a class="btn btn-outline-secondary" href="/aset">Batal</a></div>
+</form>

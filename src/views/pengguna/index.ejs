@@ -1,0 +1,21 @@
+<div class="page-head"><p class="text-muted mb-0">Kelola akun yang dapat masuk ke sistem.</p>
+  <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#formModal" data-title="Tambah Pengguna" data-action="/pengguna" data-values='{"aktif":true}' data-mode="new"><i class="bi bi-plus-lg"></i> Tambah Pengguna</button></div>
+<div class="panel p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Status</th><th></th></tr></thead><tbody>
+  <% rows.forEach(u => { %><tr><td class="fw-semibold"><%= u.nama %></td><td class="text-muted"><%= u.username %></td><td><%- badge(u.role) %></td><td><%- u.aktif ? badge('Tersedia').replace('Tersedia', 'Aktif') : badge('Nonaktif') %></td>
+    <td class="text-end text-nowrap">
+      <button class="icon-btn sm" title="Ubah" data-bs-toggle="modal" data-bs-target="#formModal" data-title="Ubah Pengguna" data-action="/pengguna/<%= u.id %>" data-mode="edit" data-values="<%= JSON.stringify({ nama: u.nama, username: u.username, role: u.role, aktif: !!u.aktif }) %>"><i class="bi bi-pencil"></i></button>
+      <% if (u.id !== user.id) { %><form class="d-inline" method="post" action="/pengguna/<%= u.id %>/hapus" data-confirm="Hapus pengguna ini?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="icon-btn sm danger" title="Hapus"><i class="bi bi-trash"></i></button></form><% } %></td></tr><% }) %>
+</tbody></table></div></div>
+<div class="modal fade" id="formModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="modal-header"><h5 class="modal-title" data-role="title"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <label class="form-label">Nama lengkap</label><input class="form-control mb-3" name="nama" maxlength="100" required>
+    <label class="form-label">Username</label><input class="form-control mb-3" name="username" maxlength="50" pattern="[a-zA-Z0-9._-]{3,50}" data-new-only>
+    <div class="row g-3 mb-3"><div class="col-6"><label class="form-label">Peran</label><select class="form-select" name="role"><option value="staff">Staf</option><option value="admin">Admin</option></select></div>
+      <div class="col-6 d-flex align-items-end"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="aktif" id="aktif" value="1"><label class="form-check-label" for="aktif">Akun aktif</label></div></div></div>
+    <label class="form-label">Password <small class="text-muted" data-role="pwhint"></small></label><input class="form-control" type="password" name="password" minlength="6" autocomplete="new-password">
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-brand">Simpan</button></div>
+</form></div></div>

@@ -1,0 +1,6 @@
+<form method="post" action="/pengaturan" class="panel form-panel" style="max-width:640px">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label class="form-label">Nama aplikasi</label><input class="form-control mb-3" name="nama_aplikasi" value="<%= appName %>" maxlength="40" required>
+  <label class="form-label">Nama instansi</label><input class="form-control mb-4" name="nama_instansi" value="<%= instansi %>" maxlength="120">
+  <button class="btn btn-brand">Simpan pengaturan</button>
+</form>

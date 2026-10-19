@@ -1,0 +1,68 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nama VARCHAR(100) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(100) NOT NULL,
+  role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+  aktif TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS categories (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nama VARCHAR(100) NOT NULL UNIQUE,
+  deskripsi VARCHAR(255) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS assets (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  kode VARCHAR(30) NOT NULL UNIQUE,
+  nama VARCHAR(150) NOT NULL,
+  category_id INT UNSIGNED NULL,
+  merk VARCHAR(100) NULL,
+  tahun_perolehan SMALLINT NULL,
+  kondisi ENUM('Baik','Rusak Ringan','Rusak Berat') NOT NULL DEFAULT 'Baik',
+  lokasi VARCHAR(100) NULL,
+  penanggung_jawab VARCHAR(100) NULL,
+  status ENUM('Tersedia','Dipinjam','Perbaikan','Nonaktif') NOT NULL DEFAULT 'Tersedia',
+  catatan TEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_status (status),
+  CONSTRAINT fk_assets_cat FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS loans (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  asset_id INT UNSIGNED NOT NULL,
+  peminjam VARCHAR(100) NOT NULL,
+  unit VARCHAR(100) NULL,
+  keperluan VARCHAR(255) NULL,
+  tgl_pinjam DATE NOT NULL,
+  tgl_rencana_kembali DATE NOT NULL,
+  tgl_kembali DATE NULL,
+  status ENUM('Dipinjam','Dikembalikan') NOT NULL DEFAULT 'Dipinjam',
+  kondisi_kembali ENUM('Baik','Rusak Ringan','Rusak Berat') NULL,
+  catatan VARCHAR(255) NULL,
+  created_by INT UNSIGNED NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_loan_status (status),
+  CONSTRAINT fk_loans_asset FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_loans_user FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NULL,
+  aksi VARCHAR(50) NOT NULL,
+  detail VARCHAR(255) NULL,
+  ip VARCHAR(64) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_created (created_at),
+  CONSTRAINT fk_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS settings (
+  k VARCHAR(50) PRIMARY KEY,
+  v VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

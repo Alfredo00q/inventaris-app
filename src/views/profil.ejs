@@ -1,0 +1,6 @@
+<div class="row g-3"><div class="col-lg-5"><div class="panel"><div class="d-flex align-items-center gap-3"><span class="avatar lg"><%= user.nama.charAt(0).toUpperCase() %></span><div><h2 class="h5 mb-0"><%= user.nama %></h2><div class="text-muted">@<%= user.username %> &middot; <%= user.role === 'admin' ? 'Administrator' : 'Staf' %></div></div></div></div></div>
+<div class="col-lg-7"><form method="post" action="/profil" class="panel form-panel"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><h3>Ganti password</h3>
+  <label class="form-label">Password lama</label><input class="form-control mb-3" type="password" name="lama" required autocomplete="current-password">
+  <label class="form-label">Password baru</label><input class="form-control mb-3" type="password" name="baru" minlength="6" required autocomplete="new-password">
+  <label class="form-label">Ulangi password baru</label><input class="form-control mb-4" type="password" name="ulang" minlength="6" required autocomplete="new-password">
+  <button class="btn btn-brand">Simpan</button></form></div></div>

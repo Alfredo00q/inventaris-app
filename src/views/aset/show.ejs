@@ -1,0 +1,21 @@
+<div class="row g-3">
+  <div class="col-lg-5"><div class="panel">
+    <div class="d-flex justify-content-between align-items-start mb-3"><div><div class="text-muted small"><%= a.kode %></div><h2 class="h4 mb-0"><%= a.nama %></h2></div><div class="d-flex gap-2"><%- badge(a.status) %></div></div>
+    <dl class="detail">
+      <dt>Kategori</dt><dd><%= a.kategori || '-' %></dd><dt>Merk / tipe</dt><dd><%= a.merk || '-' %></dd><dt>Tahun perolehan</dt><dd><%= a.tahun_perolehan || '-' %></dd>
+      <dt>Kondisi</dt><dd><%- badge(a.kondisi) %></dd><dt>Lokasi</dt><dd><%= a.lokasi || '-' %></dd><dt>Penanggung jawab</dt><dd><%= a.penanggung_jawab || '-' %></dd>
+      <dt>Catatan</dt><dd><%= a.catatan || '-' %></dd><dt>Diperbarui</dt><dd><%= fmtDateTime(a.updated_at) %></dd>
+    </dl>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <% if (a.status === 'Tersedia') { %><a class="btn btn-brand" href="/peminjaman/baru?aset=<%= a.id %>"><i class="bi bi-arrow-left-right"></i> Pinjamkan</a><% } %>
+      <a class="btn btn-outline-secondary" href="/aset/<%= a.id %>/edit"><i class="bi bi-pencil"></i> Ubah</a>
+      <form method="post" action="/aset/<%= a.id %>/hapus" data-confirm="Hapus aset ini? Tindakan tidak bisa dibatalkan."><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Hapus</button></form>
+    </div>
+  </div></div>
+  <div class="col-lg-7"><div class="panel"><h3>Riwayat peminjaman</h3>
+    <% if (!loans.length) { %><p class="empty">Belum pernah dipinjam.</p><% } else { %>
+    <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Peminjam</th><th>Pinjam</th><th>Kembali</th><th>Status</th></tr></thead><tbody>
+      <% loans.forEach(l => { %><tr><td><%= l.peminjam %><div class="small text-muted"><%= l.unit || '' %></div></td><td><%= fmtDate(l.tgl_pinjam) %></td><td><%= l.tgl_kembali ? fmtDate(l.tgl_kembali) : 'Batas ' + fmtDate(l.tgl_rencana_kembali) %></td><td><%- badge(l.status) %></td></tr><% }) %>
+    </tbody></table></div><% } %>
+  </div></div>
+</div>

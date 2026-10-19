@@ -1,0 +1,20 @@
+<div class="auth-wrap">
+  <section class="auth-hero">
+    <span class="brand-logo lg"><i class="bi bi-boxes"></i></span>
+    <h1><%= appName %></h1>
+    <p>Sistem informasi inventaris dan peminjaman aset<%= instansi ? ' untuk ' + instansi : '' %>. Data tertata, peminjaman terpantau.</p>
+    <ul><li><i class="bi bi-check2-circle"></i> Data aset terpusat dan mudah dicari</li><li><i class="bi bi-check2-circle"></i> Peminjaman dan pengembalian tercatat</li><li><i class="bi bi-check2-circle"></i> Dashboard ringkas untuk pimpinan</li></ul>
+  </section>
+  <section class="auth-card">
+    <h2>Masuk</h2><p class="text-muted">Silakan login untuk melanjutkan.</p>
+    <% if (flash) { %><div class="alert alert-<%= flash.type %>"><%= flash.text %></div><% } %>
+    <form method="post" action="/login" autocomplete="on">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label class="form-label">Username</label>
+      <div class="input-group mb-3"><span class="input-group-text"><i class="bi bi-person"></i></span><input class="form-control" name="username" required autofocus autocomplete="username"></div>
+      <label class="form-label">Password</label>
+      <div class="input-group mb-4"><span class="input-group-text"><i class="bi bi-lock"></i></span><input class="form-control" type="password" name="password" required autocomplete="current-password"></div>
+      <button class="btn btn-brand w-100">Masuk</button>
+    </form>
+  </section>
+</div>
